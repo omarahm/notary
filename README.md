@@ -5,6 +5,8 @@ Notary is a contracts broker. It provides a declarative way of sharing, validati
 Support for multiple popular integration patterns like REST APIs will be shipped out of the box, plus the ability to easily extend the project with "Integrations plugins" to support even more patterns.
 
 ## What is a *Contract*?
+
+[![Join the chat at https://gitter.im/notary-contracts/Lobby](https://badges.gitter.im/notary-contracts/Lobby.svg)](https://gitter.im/notary-contracts/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A contract is either a **Producer Promise** or a **Consumer Expectation**. In C7s, it's a meta-data describing how to use a specific shared integration point, e.g.: a Swagger file describing exposed REST API endpoint including API versioning, paths, supported methods, response entities, etc..
 
 ## How does the provider/consumer validation work?
