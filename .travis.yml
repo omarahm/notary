@@ -5,19 +5,6 @@ node_js:
 cache:
   directories:
     - "node_modules"
-services:
-  - docker
 
 after_success:
   - codecov
-  - >
-    if ([ "$TRAVIS_BRANCH" == "master" ] || [ ! -z "$TRAVIS_TAG" ]) &&
-        [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-      export DOCKER_TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_TAG ; fi`
-      ./node_modules/.bin/babel src/ -d dist/ --copy-files --ignore public/
-      cp -r ./src/endpoints/directory_gui/public ./dist/endpoints/directory_gui
-      docker build -t omarahm/notary:$DOCKER_TAG .
-      docker push omarahm/notary:$DOCKER_TAG
-    else
-      echo "This will not deploy!"
-    fi
