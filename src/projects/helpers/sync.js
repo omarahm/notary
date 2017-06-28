@@ -58,6 +58,7 @@ export default {
   },
 
   getCacheKey(projectWorkspace) {
-    return `${projectWorkspace.project.repo}:${projectWorkspace.project.dir}@${projectWorkspace.rev}`;
+    return `${projectWorkspace.owner}/${projectWorkspace.project.repo}:${projectWorkspace.project
+      .dir}@${projectWorkspace.rev}`;
   }
 };
