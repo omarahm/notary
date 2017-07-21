@@ -8,13 +8,11 @@
  * @returns {Promise.<void>}
  */
 async function validate(
-    producerProjectRevision,
-    consumerProjectRevision,
-    promiseContract,
-    expectationContract
-) {
-
-}
+  producerProjectRevision,
+  consumerProjectRevision,
+  promiseContract,
+  expectationContract
+) {}
 
 /**
  * Validates only the contract schema.
@@ -37,7 +35,7 @@ async function validateContractSchema(projectRevision, contract) {
  *
  * @returns {Promise.<string>} HTML rendered contract
  */
-async function renderToHtml(projectRevision, contract) { }
+async function renderToHtml(projectRevision, contract) {}
 
 module.exports = {
   validate,
