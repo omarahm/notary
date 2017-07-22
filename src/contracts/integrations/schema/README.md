@@ -1,7 +1,7 @@
 # Schema integration type
 A very versatile integration type that allows you to define "prototypes" with a name and a JSON
 schema on the installation level, then you can define contracts in different projects that must
-fulfill the prototype schema and follows the same notary consumer/provider cross-checking.
+fulfill the prototype schema and follows the usual notary consumer/provider cross-checking.
 
 For example, to support validating contracts for tracking events in an organization this module can 
 be used to define a prototype of name `trackingEvent` with a JSON schema in your config.yaml

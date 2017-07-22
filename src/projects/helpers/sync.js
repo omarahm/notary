@@ -35,7 +35,7 @@ export default {
       authParam = '';
     }
 
-    const repoOwner = _.defaultTo(projectWorkspace.project.owner, config.defaultRepoOwner);
+    const repoOwner = _.defaultTo(projectWorkspace.project.owner, config.defaultRepositoryOwner);
     const cmd = `
       mkdir -p ${projectWorkspace.getContractsPath()} \\
         && curl --fail --silent ${authParam} -L 'https://api.github.com/repos/${repoOwner}/${projectWorkspace
