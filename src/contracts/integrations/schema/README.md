@@ -34,7 +34,7 @@ and then different projects can start promising and expecting contracts of type 
 - integration: schema
   dir: promises/tracking-events/add-to-basket
   meta:
-    prototype: trackingEvent
+    prototypeName: trackingEvent
     name: add-to-basket
     description: User adds a specific SKU to the shopping basket
 ```

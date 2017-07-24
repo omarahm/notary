@@ -22,14 +22,14 @@ contracts:
     - integration: schema
       dir: promises/tracking-events/add-to-basket
       meta:
-        prototype: trackingEvent
+        prototypeName: trackingEvent
         name: add-to-basket
         description: User adds a specific SKU to the shopping basket
 
     - integration: schema
       dir: promises/tracking-events/add-to-wishlist
       meta:
-        prototype: trackingEvent
+        prototypeName: trackingEvent
         name: add-to-wishlist
         description: User adds a specific SKU to their wishlist
 

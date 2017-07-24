@@ -1,3 +1,15 @@
+import Ajv from 'ajv';
+import { VError } from 'verror';
+
+import parser from './parser';
+import configParser from './config_parser';
+
+const ajv = new Ajv({
+  allErrors: true,
+  verbose: true,
+  v5: true
+});
+
 /**
  * Cross-checks producer promises with consumer expectations.
  *
@@ -22,9 +34,23 @@ async function validate(
  * @returns {Promise.<void>}
  */
 async function validateContractSchema(projectRevision, contract) {
-  // 1. Combine all ya?ml files
-  // 2. Check meta.prototype and fetch prototype definition from notary config
-  // 3. Check that the contract satisfies the prototype definition
+  const contractContent =
+      await parser.parse(projectRevision.workspace.resolveContractsPath(contract.dir));
+
+  if (!contract.meta.prototypeName) {
+    throw new VError('Contract definitions of type "schema" needs a meta.prototypeName field defined.')
+  }
+
+  const proto = configParser.prototypeByName(contract.meta.prototypeName);
+  if (!configParser.prototypeByName(contract.meta.prototypeName)) {
+    throw new VError(`Invalid prototype ${contract.meta.prototypeName}, contact your administrator to get the correct prototype name.`)
+  }
+
+  const matchesPrototype = ajv.validate(proto.compiledSchema, contractContent);
+
+  if (!matchesPrototype) {
+    throw new VError(`Contract doesn't match the prototype: ${ajv.errorsText()}`);
+  }
 }
 
 /**

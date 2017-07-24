@@ -1,6 +1,6 @@
-import Parser from './parser';
-import Validator from './validator';
-import Renderer from './renderer';
+import parser from './parser';
+import validator from './validator';
+import renderer from './renderer';
 
 /**
  * Renders a contract to an HTML string.
@@ -11,11 +11,11 @@ import Renderer from './renderer';
  * @returns {Promise.<string>} HTML rendered contract
  */
 async function renderToHtml(projectRevision, contract) {
-  const swaggerSpec = await Parser.parse(
+  const swaggerSpec = await parser.parse(
     projectRevision.workspace.resolveContractsPath(contract.dir)
   );
 
-  return await Renderer.render(swaggerSpec);
+  return await renderer.render(swaggerSpec);
 }
 
 /**
@@ -26,7 +26,7 @@ async function renderToHtml(projectRevision, contract) {
  * @returns {Promise.<void>}
  */
 async function validateContractSchema(projectRevision, contract) {
-  await Parser.parse(projectRevision.workspace.resolveContractsPath(contract.dir));
+  await parser.parse(projectRevision.workspace.resolveContractsPath(contract.dir));
 }
 
 /**
@@ -44,7 +44,7 @@ async function validate(
   promiseContract,
   expectationContract
 ) {
-  const producerSwagger = await Parser.parse(
+  const producerSwagger = await parser.parse(
     producerProjectRevision.workspace.resolveContractsPath(promiseContract.dir)
   ).catch(err =>
     Promise.reject(
@@ -54,7 +54,7 @@ async function validate(
     )
   );
 
-  const consumerSwagger = await Parser.parse(
+  const consumerSwagger = await parser.parse(
     consumerProjectRevision.workspace.resolveContractsPath(expectationContract.dir)
   ).catch(err =>
     Promise.reject(
@@ -64,7 +64,7 @@ async function validate(
     )
   );
 
-  return await Validator.isSubset(producerSwagger, consumerSwagger);
+  return await validator.isSubset(producerSwagger, consumerSwagger);
 }
 
 module.exports = {
