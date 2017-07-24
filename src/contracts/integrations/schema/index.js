@@ -79,7 +79,16 @@ async function validateContractSchema(projectRevision, contract) {
  *
  * @returns {Promise.<string>} HTML rendered contract
  */
-async function renderToHtml(projectRevision, contract) {}
+async function renderToHtml(projectRevision, contract) {
+  const contractContent =
+      await parser.parse(projectRevision.workspace.resolveContractsPath(contract.dir));
+  let markup = `<table>`;
+  _.toPairs(contractContent).forEach(e => {
+    markup += `<tr><td>${e[0]}</td><td>${e[1]}</td></tr>`;
+  });
+  markup += `</table>`;
+  return markup;
+}
 
 module.exports = {
   validate,
