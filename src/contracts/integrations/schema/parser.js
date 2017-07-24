@@ -16,14 +16,14 @@ export default {
     });
 
     const filesContent = await Promise.all(
-        files.map(async f => {
-          return new Promise((resolve, reject) => {
-            fs.readFile(f, (err, data) => {
-              if (err) reject(err);
-              else resolve(data);
-            });
+      files.map(async f => {
+        return new Promise((resolve, reject) => {
+          fs.readFile(f, (err, data) => {
+            if (err) reject(err);
+            else resolve(data);
           });
-        })
+        });
+      })
     );
     const concatenatedContent = filesContent.join(`\n`);
 

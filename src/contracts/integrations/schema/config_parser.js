@@ -14,7 +14,7 @@ export default {
    * Return a specific prototype by name
    */
   prototypeByName(name) {
-    return this.prototypes().find((p) => p.name === name);
+    return this.prototypes().find(p => p.name === name);
   },
 
   /**
@@ -25,8 +25,12 @@ export default {
       return [];
     }
 
-    return config.modules.schema.prototypes.map((rawPrototype) => {
-      return new Prototype({name: rawPrototype.name, schema: rawPrototype.schema, compiledSchema: ajv.compile(rawPrototype.schema)});
+    return config.modules.schema.prototypes.map(rawPrototype => {
+      return new Prototype({
+        name: rawPrototype.name,
+        schema: rawPrototype.schema,
+        compiledSchema: ajv.compile(rawPrototype.schema)
+      });
     });
   }
-}
+};

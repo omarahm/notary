@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default class Prototype {
   name = null;
   schema = null;

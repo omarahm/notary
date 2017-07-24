@@ -44,25 +44,25 @@ async function validate(
   promiseContract,
   expectationContract
 ) {
-  const producerSwagger = await parser.parse(
-    producerProjectRevision.workspace.resolveContractsPath(promiseContract.dir)
-  ).catch(err =>
-    Promise.reject(
-      `Error! producer contract at ${producerProjectRevision.project().repo}:` +
-        `${producerProjectRevision.project().dir}/${promiseContract.dir}` +
-        err.message
-    )
-  );
+  const producerSwagger = await parser
+    .parse(producerProjectRevision.workspace.resolveContractsPath(promiseContract.dir))
+    .catch(err =>
+      Promise.reject(
+        `Error! producer contract at ${producerProjectRevision.project().repo}:` +
+          `${producerProjectRevision.project().dir}/${promiseContract.dir}` +
+          err.message
+      )
+    );
 
-  const consumerSwagger = await parser.parse(
-    consumerProjectRevision.workspace.resolveContractsPath(expectationContract.dir)
-  ).catch(err =>
-    Promise.reject(
-      `Error! consumer contract at ${consumerProjectRevision.project().repo}:` +
-        `${consumerProjectRevision.project().dir}/${expectationContract.dir}` +
-        err.message
-    )
-  );
+  const consumerSwagger = await parser
+    .parse(consumerProjectRevision.workspace.resolveContractsPath(expectationContract.dir))
+    .catch(err =>
+      Promise.reject(
+        `Error! consumer contract at ${consumerProjectRevision.project().repo}:` +
+          `${consumerProjectRevision.project().dir}/${expectationContract.dir}` +
+          err.message
+      )
+    );
 
   return await validator.isSubset(producerSwagger, consumerSwagger);
 }
