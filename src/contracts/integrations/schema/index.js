@@ -98,11 +98,30 @@ async function renderToHtml(projectRevision, contract) {
   const contractContent = await parser.parse(
     projectRevision.workspace.resolveContractsPath(contract.dir)
   );
-  let markup = `<table>`;
+  let markup = `<table class="notary-modules-schema">`;
   _.toPairs(contractContent).forEach(e => {
-    markup += `<tr><td>${e[0]}</td><td>${e[1]}</td></tr>`;
+    markup += `<tr>`;
+    markup += `<td>${e[0]}</td>`;
+    if (typeof e[1] === 'object') {
+      markup += `<td>${inspect(e[1]).replace(`\n`, `<br>`)}</td>`;
+    } else {
+      markup += `<td>${e[1]}</td>`;
+    }
+    markup += `</tr>`;
   });
+
   markup += `</table>`;
+  markup += `
+    <style>
+    .notary-modules-schema {
+      width: 100%
+    }
+    .notary-modules-schema th, td{
+      padding: 15px;
+      text-align: left;
+    }
+    </style>
+  `;
   return markup;
 }
 

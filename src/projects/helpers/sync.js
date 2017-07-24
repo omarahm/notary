@@ -31,7 +31,7 @@ export default {
     }
 
     let authParam = `--user 'x-oauth-token:${config.githubToken}' `;
-    if (config.githubToken === '') {
+    if (!config.githubToken) {
       authParam = '';
     }
 

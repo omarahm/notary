@@ -1,0 +1,94 @@
+swagger: '2.0'
+info:
+  description: Provider Client Services
+  version: '1.0'
+  title: Provider Client Services
+  contact: {}
+  license: {}
+basePath: /
+tags:
+  - name: transaction-storage-controller
+    description: Transaction Storage Controller
+  - name: health-controller
+    description: Health Controller
+paths:
+  /health:
+    get:
+      tags:
+        - health-controller
+      summary: Health check
+      operationId: healthUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/session/store/{sessionId}':
+    get:
+      tags:
+        - transaction-storage-controller
+      summary: Fetch a transaction
+      operationId: getUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json;charset=LATIN-1
+      parameters:
+        - name: sessionId
+          in: path
+          description: transactionId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - transaction-storage-controller
+      summary: Store a transaction
+      operationId: putUsingPUT
+      consumes:
+        - application/json;charset=UTF-8
+      produces:
+        - '*/*'
+      parameters:
+        - name: sessionId
+          in: path
+          description: transactionId
+          required: true
+          type: string
+        - in: body
+          name: data
+          description: data
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found

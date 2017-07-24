@@ -1,0 +1,36 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: Provider Client Service <-> BPC transaction store consumer expectations
+basePath: /
+paths:
+  '/session/store/{sessionId}':
+    get:
+      produces:
+        - application/json;charset=UTF-8
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+    put:
+      consumes:
+        - application/json;charset=UTF-8
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          type: string
+        - name: data
+          in: body
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK

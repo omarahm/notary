@@ -1,0 +1,156 @@
+swagger: '2.0'
+info:
+  description: Prices timeline API for getting daily prices between two positions
+  version: 0.0.1
+  title: Prices Timeline
+basePath: /v1/
+schemes:
+  - https
+x-types:
+  BUCKETTYPE: &ref_0
+    - HOURLY
+    - DAILY
+    - WEEKLY
+    - MONTHLY
+    - FULL
+  TRAVELMODE:
+    - BUS
+    - TRAIN
+    - FLIGHT
+securityDefinitions:
+  OAuth2:
+    type: oauth2
+    flow: application
+    tokenUrl: 'http://localhost:8080/oauth/token'
+    scopes:
+      read: read
+      write: write
+security:
+  - OAuth2: []
+paths:
+  '/timeframes/{timeframe}/daily-buckets':
+    get:
+      tags:
+        - routes
+      summary: >-
+        Find cheapest journeys for a route for a date interval for all travel
+        modes
+      description: >-
+        Get list of daily prices for a given route in a date interval for all
+        travel modes
+      security:
+        - OAuth2: []
+      operationId: getPricesFromTimeline
+      produces:
+        - application/json
+      parameters:
+        - name: timeframe
+          in: path
+          description: >-
+            The timeframe with the following format. <date-time>_<date-time>
+            which is consist of fromDate and toDate of timeframe
+          required: true
+          type: string
+        - name: 'filters[route.departureId]'
+          in: query
+          description: Position ID of departure location
+          required: true
+          type: integer
+        - name: 'filters[route.arrivalId]'
+          in: query
+          description: Position ID of arrival location
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful Operation
+          schema:
+            $ref: '#/definitions/BucketUrl'
+        '400':
+          description: Invalid position ID supplied
+        '401':
+          description: Invalid token
+        '404':
+          description: No daily offers for this route
+definitions:
+  BucketUrl:
+    type: object
+    properties:
+      _links:
+        type: object
+        properties:
+          self:
+            type: object
+            properties:
+              href:
+                type: string
+                example: >-
+                  /timeframes/2017-08-06T00:00:00.000+00:00_2017-08-07/daily-buckets?filters[route.departureId]=1231&filters[route.arrivalId]=231
+      _embedded:
+        type: object
+        properties:
+          buckets:
+            type: array
+            items:
+              $ref: '#/definitions/BucketPrices'
+  BucketPrices:
+    type: object
+    properties:
+      arrivalId:
+        type: integer
+      bucketInfo:
+        $ref: '#/definitions/BucketInfo'
+      bus:
+        $ref: '#/definitions/Journey'
+      departureId:
+        type: integer
+      train:
+        $ref: '#/definitions/Journey'
+      flight:
+        $ref: '#/definitions/Journey'
+  BucketInfo:
+    type: object
+    properties:
+      fromDate:
+        type: string
+        format: date-time
+      bucketType:
+        $ref: '#/definitions/BucketType'
+      toDate:
+        type: string
+        format: date-time
+  BucketType:
+    type: string
+    enum: *ref_0
+  Journey:
+    type: object
+    properties:
+      priceStats:
+        $ref: '#/definitions/PriceStats'
+      cheapestJourney:
+        $ref: '#/definitions/Offer'
+  PriceStats:
+    type: object
+    properties:
+      cheapestInCents:
+        type: integer
+  Offer:
+    type: object
+    properties:
+      priceInCents:
+        type: integer
+        format: int64
+      providerName:
+        type: string
+      providerUuid:
+        type: string
+        example: 00000000-0000-0000-0000-000000000000
+      departureTime:
+        type: string
+        format: date-time
+      arrivalTime:
+        type: string
+        format: date-time
+externalDocs:
+  description: Find out more about Prices Timeline
+  url: 'https://github.com/goeuro/prices-timeline/blob/master/README.md'

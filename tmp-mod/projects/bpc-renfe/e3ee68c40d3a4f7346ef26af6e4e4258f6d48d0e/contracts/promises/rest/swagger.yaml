@@ -1,0 +1,500 @@
+---
+swagger: "2.0"
+info:
+  description: "bpc-renfe"
+  version: "1.0"
+  title: "bpc-renfe"
+host: "localhost:8080"
+basePath: "/"
+schemes:
+- "http"
+paths:
+  /abort:
+    post:
+      summary: "Abort (abort transaction)"
+      description: ""
+      operationId: "abort"
+      consumes:
+      - "application/json;charset=UTF-8"
+      produces:
+      - "application/json;charset=UTF-8"
+      parameters:
+      - in: "body"
+        name: "Abort request"
+        required: true
+        schema:
+          $ref: "#/definitions/AbortRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/AbortResponse"
+        500:
+          description: "Unexpected error see errorCode for details."
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /book:
+    post:
+      summary: "Book (commit transaction)"
+      description: ""
+      operationId: "book"
+      consumes:
+      - "application/json;charset=UTF-8"
+      produces:
+      - "application/json;charset=UTF-8"
+      parameters:
+      - in: "body"
+        name: "Booking request"
+        required: true
+        schema:
+          $ref: "#/definitions/BookingRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/BookingResponse"
+        500:
+          description: "Unexpected error see errorCode for details."
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /cancel:
+    post:
+      summary: "Cancel"
+      description: ""
+      operationId: "fullCancellation"
+      consumes:
+      - "application/json;charset=UTF-8"
+      produces:
+      - "application/json;charset=UTF-8"
+      parameters:
+      - in: "body"
+        name: "Cancellation request"
+        required: true
+        schema:
+          $ref: "#/definitions/CancellationRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CancellationResponse"
+        500:
+          description: "Unexpected error see errorCode for details."
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /get-cancellation-options/{bookingReference}:
+    get:
+      summary: "Get cancellation options"
+      description: ""
+      operationId: "checkCancellation"
+      produces:
+      - "application/json;charset=UTF-8"
+      parameters:
+      - name: "bookingReference"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CancellationOptionsResponse"
+        500:
+          description: "Unexpected error see errorCode for details."
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /initialise-booking:
+    post:
+      summary: "Initialise (get static data/configuration)"
+      description: ""
+      operationId: "initialiseBooking"
+      consumes:
+      - "application/json;charset=UTF-8"
+      produces:
+      - "application/json;charset=UTF-8"
+      parameters:
+      - in: "body"
+        name: "Initialise request"
+        required: true
+        schema:
+          $ref: "#/definitions/InitialiseBookingRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/InitialiseBookingResponse"
+        500:
+          description: "Unexpected error see errorCode for details."
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /reserve:
+    post:
+      summary: "Reserve (start transaction)"
+      description: ""
+      operationId: "reserve"
+      consumes:
+      - "application/json;charset=UTF-8"
+      produces:
+      - "application/json;charset=UTF-8"
+      parameters:
+      - in: "body"
+        name: "Reservation request"
+        required: true
+        schema:
+          $ref: "#/definitions/ReservationRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ReserveResponse"
+        500:
+          description: "Unexpected error see errorCode for details."
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  AbortRequest:
+    type: "object"
+    properties:
+      transactionId:
+        type: "string"
+  AbortResponse:
+    type: "object"
+  BookingRequest:
+    type: "object"
+    properties:
+      transactionId:
+        type: "string"
+  BookingResponse:
+    type: "object"
+    properties:
+      bookingReference:
+        type: "string"
+      ticketURI:
+        type: "string"
+      tickets:
+        type: "array"
+        items:
+          $ref: "#/definitions/Ticket"
+      seats:
+        type: "array"
+        items:
+          $ref: "#/definitions/Seat"
+      segments:
+        type: "array"
+        items:
+          $ref: "#/definitions/Segment"
+  CancellationOption:
+    type: "object"
+    properties:
+      bookingReference:
+        type: "string"
+      ticketId:
+        type: "string"
+      cancellationType:
+        type: "string"
+        enum:
+        - "none"
+        - "partial"
+        - "full"
+      cancellationFee:
+        $ref: "#/definitions/Chargeable"
+  CancellationOptionsResponse:
+    type: "object"
+    properties:
+      cancellationOptions:
+        type: "array"
+        items:
+          $ref: "#/definitions/CancellationOption"
+  CancellationRequest:
+    type: "object"
+    properties:
+      cancellationOptionId:
+        type: "string"
+      bookingReference:
+        type: "string"
+  CancellationResponse:
+    type: "object"
+  Chargeable:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        enum:
+        - "providerFee"
+        - "farePrice"
+        - "cancellationFee"
+      currency:
+        type: "string"
+      lowestUnitValue:
+        type: "integer"
+        format: "int64"
+  ComponentConfig:
+    type: "object"
+  Disclaimer:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        enum:
+        - "success"
+        - "warning"
+        - "error"
+      stages:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "presale"
+      message:
+        type: "string"
+  ErrorResponse:
+    type: "object"
+    properties:
+      errorCode:
+        type: "string"
+        enum:
+        - "PROVIDER_ERROR"
+        - "UNAVAILABLE_OFFER"
+        - "PRICE_CHANGED"
+        - "PROTOCOL_ERROR"
+      message:
+        type: "string"
+  FareCondition:
+    type: "object"
+    properties:
+      category:
+        type: "string"
+        enum:
+        - "cancellation"
+        - "extraPriceInfo"
+        - "validity"
+      text:
+        type: "string"
+  FareDetail:
+    type: "object"
+    properties:
+      segmentId:
+        type: "string"
+      numberOfPassengers:
+        type: "integer"
+        format: "int32"
+      priority:
+        type: "integer"
+        format: "int32"
+      label:
+        type: "string"
+      fareConditions:
+        type: "array"
+        items:
+          $ref: "#/definitions/FareCondition"
+  Id:
+    type: "object"
+    properties:
+      identifier:
+        type: "string"
+  IdSeat:
+    type: "object"
+    properties:
+      identifier:
+        type: "string"
+  IdSegment:
+    type: "object"
+    properties:
+      identifier:
+        type: "string"
+  IdTicket:
+    type: "object"
+    properties:
+      identifier:
+        type: "string"
+  InitialiseBookingRequest:
+    type: "object"
+    properties:
+      searchData:
+        type: "string"
+  InitialiseBookingResponse:
+    type: "object"
+    required:
+    - "charges"
+    - "componentConfigs"
+    - "fareDetails"
+    - "passengerConfigs"
+    - "provider"
+    - "segments"
+    properties:
+      passengerConfigs:
+        type: "array"
+        items:
+          $ref: "#/definitions/PassengerConfig"
+        maxItems: 2147483647
+        minItems: 1
+      componentConfigs:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ComponentConfig"
+      provider:
+        type: "string"
+      partnerProviderCode:
+        type: "string"
+      trackingCode:
+        type: "string"
+        description: "Will be used for tracking (ex: financial reports). If not provided,\
+          \ the \"provider\" field will be used instead."
+      charges:
+        type: "array"
+        items:
+          $ref: "#/definitions/Chargeable"
+      disclaimers:
+        type: "array"
+        items:
+          $ref: "#/definitions/Disclaimer"
+      segments:
+        type: "array"
+        items:
+          $ref: "#/definitions/Segment"
+      fareDetails:
+        type: "array"
+        items:
+          $ref: "#/definitions/FareDetail"
+    description: "List of components configs. Each row represents the required components\
+      \ for one passenger"
+  Name:
+    type: "object"
+    properties:
+      first:
+        type: "string"
+      last:
+        type: "string"
+  PassengerConfig:
+    type: "object"
+    required:
+    - "passengerType"
+    properties:
+      passengerType:
+        type: "string"
+        enum:
+        - "adult"
+        - "child"
+        - "infant"
+        - "infantNoSeat"
+      components:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "discountCard"
+          - "email"
+          - "name"
+  PassengerDetail:
+    type: "object"
+    properties:
+      passengerType:
+        type: "string"
+        enum:
+        - "adult"
+        - "child"
+        - "infant"
+        - "infantNoSeat"
+      name:
+        $ref: "#/definitions/Name"
+      discountCard:
+        type: "string"
+  ReservationRequest:
+    type: "object"
+    properties:
+      transactionId:
+        type: "string"
+      passengerDetails:
+        type: "array"
+        items:
+          $ref: "#/definitions/PassengerDetail"
+      email:
+        type: "string"
+      searchData:
+        type: "string"
+  ReserveResponse:
+    type: "object"
+    required:
+    - "charges"
+    properties:
+      charges:
+        type: "array"
+        items:
+          $ref: "#/definitions/Chargeable"
+        maxItems: 2147483647
+        minItems: 1
+    description: "A reserve response with a list of chargeables post reserve"
+  Seat:
+    type: "object"
+    properties:
+      id:
+        $ref: "#/definitions/IdSeat"
+      number:
+        type: "string"
+      carriage:
+        type: "string"
+      segmentId:
+        $ref: "#/definitions/IdSegment"
+  Segment:
+    type: "object"
+    properties:
+      id:
+        $ref: "#/definitions/IdSegment"
+      direction:
+        type: "string"
+        enum:
+        - "outbound"
+        - "inbound"
+      arrivalCityId:
+        type: "string"
+      arrivalCityName:
+        type: "string"
+      arrivalCountryCode:
+        type: "string"
+      arrivalDateTime:
+        type: "string"
+        format: "date-time"
+      arrivalStationName:
+        type: "string"
+      arrivalTimeZoneId:
+        type: "string"
+      carrierCode:
+        type: "string"
+      carrierName:
+        type: "string"
+      departureCityId:
+        type: "string"
+      departureCityName:
+        type: "string"
+      departureCountryCode:
+        type: "string"
+      departureDateTime:
+        type: "string"
+        format: "date-time"
+      departureStationName:
+        type: "string"
+      departureTimeZoneId:
+        type: "string"
+      travelMode:
+        type: "string"
+      vehicleId:
+        type: "string"
+      travelTimeInMinutes:
+        type: "integer"
+        format: "int64"
+  Ticket:
+    type: "object"
+    properties:
+      id:
+        $ref: "#/definitions/IdTicket"
+      type:
+        type: "string"
+        enum:
+        - "ticket"
+      roundTrip:
+        type: "boolean"
+      ticketIdentifier:
+        type: "string"
+      seatIds:
+        type: "array"
+        items:
+          $ref: "#/definitions/IdSeat"

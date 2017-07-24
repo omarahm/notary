@@ -1,0 +1,27 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: BPC Renfe <-> Booking API consumer expectations
+basePath: /
+paths:
+  '/initialise-booking':
+    post:
+      summary: "Initialise booking"
+      description: "Initialise a booking session"
+      consumes:
+      - application/json;charset=UTF-8
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+      responses:
+        200:
+          description: OK
+        201:
+          description: Created
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not Found

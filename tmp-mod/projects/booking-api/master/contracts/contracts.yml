@@ -1,0 +1,23 @@
+name: "booking-api"
+
+meta:
+  email: "corobo@goeuro.com"
+  tribe: consumer
+  pod: booking
+  description: "Booking process implementation"
+
+contracts:
+  promises: []
+
+  expectations:
+    - upstream:
+        repo: bpc-renfe
+        dir: contracts
+      integration: rest
+      dir: expectations/bpc-renfe/rest
+
+    - upstream:
+        repo: bpc-nettbuss
+        dir: contracts
+      integration: rest
+      dir: expectations/bpc-nettbuss/rest
