@@ -73,7 +73,6 @@ async function validateContractSchema(projectRevision, contract) {
   }
 
   const proto = configParser.prototypeByName(contract.meta.prototypeName);
-  console.log(proto);
   if (!configParser.prototypeByName(contract.meta.prototypeName)) {
     throw new VError(
       `Invalid prototype ${contract.meta
@@ -81,7 +80,7 @@ async function validateContractSchema(projectRevision, contract) {
     );
   }
 
-  const matchesPrototype = ajv.validate(proto.compiledSchema, contractContent);
+  const matchesPrototype = ajv.validate(proto.schema, contractContent);
   if (!matchesPrototype) {
     throw new VError(`Contract doesn't match the prototype: ${ajv.errorsText()}`);
   }

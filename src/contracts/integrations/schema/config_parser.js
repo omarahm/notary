@@ -1,13 +1,5 @@
-import Ajv from 'ajv';
-
 import config from '../../../config';
 import Prototype from './prototype';
-
-const ajv = new Ajv({
-  allErrors: true,
-  verbose: true,
-  v5: true
-});
 
 export default {
   /**
@@ -28,8 +20,7 @@ export default {
     return config.modules.schema.prototypes.map(rawPrototype => {
       return new Prototype({
         name: rawPrototype.name,
-        schema: rawPrototype.schema,
-        compiledSchema: ajv.compile(rawPrototype.schema)
+        schema: rawPrototype.schema
       });
     });
   }
