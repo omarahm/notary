@@ -67,7 +67,8 @@ async function contractsSchemaValidation(projectRevision) {
       return await facade.validateContractSchema(projectRevision, c).catch(err => {
         throw new VError(
           `Error! contract at ${projectRevision.project().repo}:` +
-            `${projectRevision.project().dir}/${c.dir} of type ${c.integrationType} is not valid: ` +
+            `${projectRevision.project()
+              .dir}/${c.dir} of type ${c.integrationType} is not valid: ` +
             err.message
         );
       });
