@@ -1,7 +1,0 @@
-topic: 'prices-timeline-cheapest'
-
-message:
-  format: protobuf-3
-  meta:
-    repo: protobuf-commons
-    file: src/main/resources/PriceTimelineUpdateAlert.proto

@@ -1,7 +1,0 @@
-topic: 'prices-timeline-summary'
-
-message:
-  format: protobuf-3
-  meta:
-    repo: protobuf-commons
-    file: src/main/resources/SearchResultsPricesSummary.proto
