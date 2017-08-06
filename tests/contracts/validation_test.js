@@ -29,20 +29,20 @@ describe('isValid() in the contracts validation service', () => {
   });
 
   it('passes when multiple promises of the same integration type is defined but with unqiue meta.name', async () => {
-      const projectRevision = await projectRevisionRepo.findByRepoDirAndRev(
-          'good-schema-provider',
-          'contracts',
-          'master'
-      );
+    const projectRevision = await projectRevisionRepo.findByRepoDirAndRev(
+      'good-schema-provider',
+      'contracts',
+      'master'
+    );
 
-      require('src/contracts/integrations').default = stubIntegration(true, true);
-      const service = require('src/contracts/validation').default;
+    require('src/contracts/integrations').default = stubIntegration(true, true);
+    const service = require('src/contracts/validation').default;
 
-      try {
-          await service.isValid(projectRevision);
-      } catch (err) {
-          assert.deepEqual(err, {}, "shouldn't throw an error.");
-      }
+    try {
+      await service.isValid(projectRevision);
+    } catch (err) {
+      assert.deepEqual(err, {}, "shouldn't throw an error.");
+    }
   });
 
   it('throws an error on multiple promises of the same integration type with no unqiue meta.name', async () => {

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import config from '../../../config';
 import Prototype from './prototype';
 
@@ -13,7 +15,7 @@ export default {
    * Returns a list of registered prototypes from the notary configuration.
    */
   prototypes() {
-    if (!config.modules.schema.prototypes) {
+    if (!_.has(config, 'modules.schema.prototypes')) {
       return [];
     }
 

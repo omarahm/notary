@@ -22,20 +22,22 @@ import Integrations from './integrations';
  */
 function promisesCanBeUniquelyIdentified(def) {
   const typesWithMultiplePromises = _.chain(def.contracts.promises)
-      .groupBy('integration')
-      .pickBy((val, key) => val.length && val.length > 1)
-      .value();
+    .groupBy('integration')
+    .pickBy(val => val.length && val.length > 1)
+    .value();
 
   _.forEach(typesWithMultiplePromises, (promises, type) => {
-      const names = _.map(promises, p => (_.has(p, 'meta.name') ? p.meta.name : undefined));
-      const hasDuplicates = _.uniq(names).length !== names.length;
-      const hasUndefined = _.includes(names, undefined);
+    const names = _.map(promises, p => (_.has(p, 'meta.name') ? p.meta.name : undefined));
+    const hasDuplicates = _.uniq(names).length !== names.length;
+    const hasUndefined = _.includes(names, undefined);
 
-      if (hasDuplicates || hasUndefined) {
-          throw new VError(`Error, project promises of type ${type} is not uniquely identifiable. `
-          + 'You need to add a unique name for each promise in the `meta.name` field in the promise definition.');
-      }
-    });
+    if (hasDuplicates || hasUndefined) {
+      throw new VError(
+        `Error, project promises of type ${type} is not uniquely identifiable. ` +
+          'You need to add a unique name for each promise in the `meta.name` field in the promise definition.'
+      );
+    }
+  });
 }
 
 async function contractsPathsValidation(def, dirBasePath) {
@@ -99,14 +101,29 @@ async function producerPromisesValidation(projectRevision, def) {
       return Promise.all(
         consumerProjectsRevs
           .map(consumerProjectRev => {
-            const consumerExpectation = consumerProjectRev.contracts
-              .filter(c => c.type === Contract.Types.EXPECTATION)
-              .find(
+            const allExpectations = consumerProjectRev.contracts.filter(
+              c => c.type === Contract.Types.EXPECTATION
+            );
+
+            // todo: refactor & centralize this logic
+            let consumerExpectation;
+            if (_.has(promise, 'meta.name')) {
+              consumerExpectation = allExpectations.find(
+                c =>
+                  c.integrationType === promise.integrationType &&
+                  c.upstream.repo === projectRevision.project().repo &&
+                  c.upstream.dir === projectRevision.project().dir &&
+                  _.has(c, 'meta.name') &&
+                  c.meta.name === promise.meta.name
+              );
+            } else {
+              consumerExpectation = allExpectations.find(
                 c =>
                   c.integrationType === promise.integrationType &&
                   c.upstream.repo === projectRevision.project().repo &&
                   c.upstream.dir === projectRevision.project().dir
               );
+            }
 
             if (consumerExpectation) {
               return {
@@ -164,7 +181,20 @@ async function consumerExpectationsValidation(projectRevision, def) {
         rev
       );
       const upstreamPromises = upstream.contracts.filter(c => c.type === Contract.Types.PROMISE);
-      const upstreamPromise = upstreamPromises.find(p => p.integrationType === e.integrationType);
+      let upstreamPromise;
+
+      // todo: refactor & centralize this logic
+      if (!_.has(e, 'meta.name')) {
+        upstreamPromise = upstreamPromises.find(p => p.integrationType === e.integrationType);
+      } else {
+        upstreamPromise = upstreamPromises.find(p => {
+          return (
+            p.integrationType === e.integrationType &&
+            _.has(p, 'meta.name') &&
+            e.meta.name === p.meta.name
+          );
+        });
+      }
 
       const facade = Integrations.get(e.integrationType);
 
