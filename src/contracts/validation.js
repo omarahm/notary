@@ -10,22 +10,32 @@ import { Project } from '../projects/models';
 import Definitions from './definitions';
 import Integrations from './integrations';
 
-function extraSchemaValidation(def) {
-  //todo: remove this limitation, find a way to allow projects to define multiple integration points with the same type
-  //      an option might be giving a unique key for each promise that consumers can use
-  if (
-    _.has(def, 'contracts.promises') &&
-    !_.isEmpty(
-      _.chain(def.contracts.promises)
-        .countBy(promise => promise.integration)
-        .filter(g => g > 1)
-        .value()
-    )
-  ) {
-    throw new VError('You can have a maximum of one producer promise for each integration type.');
-  }
+/**
+ * Two cases, a project might:
+ * - Only defines one promise of each integration type, the promise can be identified by Project + Integration type.
+ * - Defines multiple promises, in this case, `meta.name` has to be defined and must be unique across all of promises
+ *   of the same integration type.
+ *
+ * @param def Project definition
+ * @returns Void
+ * @throws VError if a promise can't be uniquely identified.
+ */
+function promisesCanBeUniquelyIdentified(def) {
+  const typesWithMultiplePromises = _.chain(def.contracts.promises)
+      .groupBy('integration')
+      .pickBy((val, key) => val.length && val.length > 1)
+      .value();
 
-  return def;
+  _.forEach(typesWithMultiplePromises, (promises, type) => {
+      const names = _.map(promises, p => (_.has(p, 'meta.name') ? p.meta.name : undefined));
+      const hasDuplicates = _.uniq(names).length !== names.length;
+      const hasUndefined = _.includes(names, undefined);
+
+      if (hasDuplicates || hasUndefined) {
+          throw new VError(`Error, project promises of type ${type} is not uniquely identifiable. `
+          + 'You need to add a unique name for each promise in the `meta.name` field in the promise definition.');
+      }
+    });
 }
 
 async function contractsPathsValidation(def, dirBasePath) {
@@ -187,7 +197,7 @@ export default {
     const dirBasePath = projectRevision.workspace.getContractsPath();
     const def = await Definitions.load(projectRevision.workspace);
 
-    await extraSchemaValidation(def);
+    await promisesCanBeUniquelyIdentified(def);
     await contractsPathsValidation(def, dirBasePath);
     await contractsSchemaValidation(projectRevision, def);
     await producerPromisesValidation(projectRevision, def);

@@ -11,3 +11,6 @@ projects:
   # - repo: good-localstorage-consumer
   - repo: broken-localstorage-provider
   # - repo: broken-localstorage-consumer
+
+  - repo: good-schema-provider
+  - repo: good-schema-consumer
