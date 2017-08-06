@@ -138,3 +138,33 @@ describe('validate() in the schema integration type facade', () => {
     }
   });
 });
+
+describe('renderToHtml() in the schema integration type facade', () => {
+  let schemaFacade;
+  let projectRevisionRepo;
+
+  before(async () => {
+    require('src/projects/helpers/sync').default.syncProjectWorkspace = () => true;
+    schemaFacade = require('src/contracts/integrations/schema');
+    projectRevisionRepo = require('src/projects/repositories/project_revision').default;
+  });
+
+  it('returns HTML representation of a defined contract', async () => {
+    const projectRevision = await projectRevisionRepo.findByRepoDirAndRev(
+      'good-schema-provider',
+      'contracts',
+      'master'
+    );
+
+    const contract = projectRevision.contracts.find(
+      c => c.type === 'promise' && c.integrationType === 'schema' && c.meta.name === 'add-to-basket'
+    );
+
+    try {
+      const html = await schemaFacade.renderToHtml(projectRevision, contract);
+      assert.include(html, 'add-to-basket');
+    } catch (err) {
+      assert.deepEqual(err, {}, "shouldn't throw an error.");
+    }
+  });
+});
