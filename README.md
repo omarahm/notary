@@ -35,5 +35,5 @@ The validation process includes:
 1. Check if all of the project's expectations are honored by its upstream providers
 
 ## What integration patterns does the project support so far?
-1. [REST APIs](src/contracts/integrations/rest/README.md): Define contracts for RESTful API endpoints using the [Swagger spec](http://swagger.io/specification/)
-1. [Frontend LocalStorage](src/contracts/integrations/localstorage/README.md): Define contracts for shared objects in the end-customer's browser LocalStorage using a specified [JSON schema](http://json-schema.org/)
+1. [REST APIs](packages/notary-rest/README.md): Define contracts for RESTful API endpoints using the [Swagger spec](http://swagger.io/specification/)
+1. [Schema](packages/notary-schema/README.md): Plugin for notary to support defining JSON schema arbitrary contracts that must abide to an installation-level Prototype.
